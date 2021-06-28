@@ -192,8 +192,7 @@ void AFBRS50::Run()
 	case STATE::TEST: {
 			Argus_VerifyHALImplementation(Argus_GetSPISlave(_hnd));
 
-			_state = STATE::CONFIGURE;
-			ScheduleDelayed(100_ms);
+			AFBRS50::stop();
 		}
 		break;
 
@@ -235,6 +234,18 @@ void AFBRS50::stop()
 {
 	_state = STATE::STOP;
 	ScheduleNow();
+}
+
+int AFBRS50::test()
+{
+	_state = STATE::TEST;
+	_testing = true;
+
+	init();
+
+	ScheduleNow();
+
+	return PX4_OK;
 }
 
 void AFBRS50::print_info()
@@ -291,6 +302,30 @@ static int stop()
 	}
 
 	PX4_INFO("driver stopped");
+	return PX4_OK;
+}
+
+static int test(const uint8_t rotation)
+{
+	if (g_dev != nullptr) {
+		PX4_ERR("already started");
+		return PX4_ERROR;
+	}
+
+	g_dev = new AFBRS50(rotation);
+
+	if (g_dev == nullptr) {
+		PX4_ERR("object instantiate failed");
+		return PX4_ERROR;
+	}
+
+	if (g_dev->test() != PX4_OK) {
+		PX4_ERR("driver test failed");
+		delete g_dev;
+		g_dev = nullptr;
+		return PX4_ERROR;
+	}
+
 	return PX4_OK;
 }
 
@@ -354,6 +389,8 @@ extern "C" __EXPORT int afbrs50_main(int argc, char *argv[])
 
 	} else if (!strcmp(argv[myoptind], "stop")) {
 		return afbrs50::stop();
+	} else if (!strcmp(argv[myoptind], "test")) {
+		return afbrs50::test(rotation);
 	}
 
 	return afbrs50::usage();
