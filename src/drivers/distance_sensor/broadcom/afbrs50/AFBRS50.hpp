@@ -81,6 +81,9 @@ private:
 
 	static status_t measurement_ready_callback(status_t status, void *data);
 
+	void get_mode();
+	void set_mode(argus_mode_t mode);
+
 	argus_hnd_t *_hnd{nullptr};
 	argus_mode_t _mode = ARGUS_MODE_A;	// Long-Range
 	// argus_mode_t _mode = ARGUS_MODE_B;	// Short-Range
