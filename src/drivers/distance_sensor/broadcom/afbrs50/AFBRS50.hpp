@@ -63,6 +63,8 @@ public:
 	 */
 	void print_info();
 
+	void print_mode();
+
 	/**
 	 * Stop the automatic measurement state machine.
 	 */
@@ -80,6 +82,8 @@ private:
 	static status_t measurement_ready_callback(status_t status, void *data);
 
 	argus_hnd_t *_hnd{nullptr};
+	argus_mode_t _mode = ARGUS_MODE_A;	// Long-Range
+	// argus_mode_t _mode = ARGUS_MODE_B;	// Short-Range
 
 	enum class STATE : uint8_t {
 		TEST,

@@ -145,7 +145,7 @@ int AFBRS50::init()
 
 		case AFBR_S50LV85D_V1:
 			_px4_rangefinder.set_min_distance(0.08f);
-			_px4_rangefinder.set_max_distance(30.f);
+			_px4_rangefinder.set_max_distance(80.f);
 			_px4_rangefinder.set_fov(math::radians(6.f));
 			PX4_INFO_RAW("AFBR-S50LV85D (v1)\n");
 			break;
@@ -253,6 +253,12 @@ void AFBRS50::print_info()
 	perf_print_counter(_sample_perf);
 }
 
+void AFBRS50::set_mode()
+{
+	status_t status = Argus_SetConfigurationMeasurementMode(_hnd, _mode);
+	return status;
+}
+
 namespace afbrs50
 {
 
@@ -329,6 +335,18 @@ static int test(const uint8_t rotation)
 	return PX4_OK;
 }
 
+static int mode()
+{
+	if (g_dev == nullptr) {
+		PX4_ERR("driver not running");
+		return PX4_ERROR;
+	}
+
+	g_dev->print_mode();
+
+	return PX4_OK;
+}
+
 static int usage()
 {
 	PRINT_MODULE_DESCRIPTION(
@@ -391,6 +409,8 @@ extern "C" __EXPORT int afbrs50_main(int argc, char *argv[])
 		return afbrs50::stop();
 	} else if (!strcmp(argv[myoptind], "test")) {
 		return afbrs50::test(rotation);
+	} else if (!strcmp(argv[myoptind], "mode")) {
+		return afbrs50::mode();
 	}
 
 	return afbrs50::usage();
