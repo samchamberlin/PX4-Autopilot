@@ -147,10 +147,8 @@ int AFBRS50::init()
 			// Set to long range mode
 			argus_mode_t mode;
 			mode = ARGUS_MODE_A;
-			PX4_INFO_RAW("Current mode: %d\n", mode);
 			set_mode(mode); // Long: ARGUS_MODE_A, Short: ARGUS_MODE_B
 			get_mode();
-			// PX4_INFO_RAW("Current mode: %d\n", get_mode());
 			_px4_rangefinder.set_min_distance(0.08f);
 			_px4_rangefinder.set_max_distance(80.f);
 			_px4_rangefinder.set_fov(math::radians(6.f));
@@ -267,12 +265,11 @@ void AFBRS50::set_mode(argus_mode_t mode)
 
 void AFBRS50::get_mode()
 {
-
-	argus_mode_t *current_mode = nullptr;
+	argus_mode_t current_mode;
 	// argus_mode_t val = ARGUS_MODE_A;
 	// current_mode = &val;
-	Argus_GetConfigurationMeasurementMode(_hnd, current_mode);
-	PX4_INFO_RAW("current mode: %d\n", *current_mode);
+	Argus_GetConfigurationMeasurementMode(_hnd, &current_mode);
+	PX4_INFO_RAW("current mode: %d\n", current_mode);
 }
 
 namespace afbrs50
