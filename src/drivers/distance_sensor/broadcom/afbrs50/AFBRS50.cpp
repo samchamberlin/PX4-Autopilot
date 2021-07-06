@@ -158,7 +158,7 @@ int AFBRS50::init()
 			argus_mode_t mode;
 			mode = ARGUS_MODE_A;
 			set_mode(mode); // Long: ARGUS_MODE_A, Short: ARGUS_MODE_B
-			// get_mode();
+			get_mode();
 			_min_distance = 0.08f;
 			_max_distance = 80.f;	// Long: 80m, Short: 30m
 			_px4_rangefinder.set_min_distance(_min_distance);
@@ -279,15 +279,19 @@ void AFBRS50::print_info()
 void AFBRS50::set_mode(argus_mode_t mode)
 {
 	Argus_SetConfigurationMeasurementMode(_hnd, mode);
+	Argus_SetConfigurationDFMMode(_hnd, mode, DFM_MODE_8X);
+
 }
 
 void AFBRS50::get_mode()
 {
 	argus_mode_t current_mode;
-	// argus_mode_t val = ARGUS_MODE_A;
-	// current_mode = &val;
+	argus_dfm_mode_t dfm_mode;
 	Argus_GetConfigurationMeasurementMode(_hnd, &current_mode);
+	Argus_GetConfigurationDFMMode(_hnd, current_mode, &dfm_mode);
+
 	PX4_INFO_RAW("current mode: %d\n", current_mode);
+	PX4_INFO_RAW("dfm mode: %d\n", dfm_mode);
 }
 
 namespace afbrs50
