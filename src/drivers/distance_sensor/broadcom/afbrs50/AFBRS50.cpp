@@ -292,6 +292,7 @@ void AFBRS50::get_mode()
 
 	PX4_INFO_RAW("current mode: %d\n", current_mode);
 	PX4_INFO_RAW("dfm mode: %d\n", dfm_mode);
+	PX4_INFO_RAW("measure rate: %d Hz\n", (1000000 / AFBRS50_MEASURE_INTERVAL));
 }
 
 namespace afbrs50
